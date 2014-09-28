@@ -3,6 +3,8 @@
 // Based on the C Reference Driver in the Avia Semiconductor HX711 datasheet.
 // I don't recommend using this if you know how to code properly. The pins used should certainly not be hard-coded into the driver!
 
+// This is a messy driver. Seriously, don't use it unless you're desperate or seriously can't code yourself!
+
 #define AHX711_h
 
 #define AHX711_UUID 0x00000030
@@ -10,6 +12,7 @@
 #define AHX711_SCALE 745
 #define AHX711_SHIFT 5000
 
+// No, pins should NOT be defined in a driver!
 #define CLOCKPIN A0
 #define DOUTPIN A1
 
@@ -47,14 +50,16 @@ class AHX711: public Sensor
 			}
 			
 			
-			// Turn Scale Off
-			// digitalWrite(CLOCKPIN, HIGH);
-			// digitalWrite(CLOCKPIN, LOW);
 	
 			HX711Data = 1-HX711Data;
+// This is just a cheap trick to flip the slope of voltage with weight on the load cell. This should NOT be necessary in any final version of this driver -- scaling should (probably) either be handled fully in the driver, or more likely with scaling factors that can be set to scale the HX711 output to actual weight.
+
+
 			// The data needs to be formatted the way it should be displayed (above).
 			// Then it should be scaled and shifted with AHX711_SCALE and AHX711_SHIFT to fit into an unsigned int.
 			
+// Notice that I'm not using AHX711_SCALE and AHX711_shift. That's because I ran out of time to implement them properly. Again, this driver is incomplete, even if it DOES technically collect useful data from the HX711 chip.
+
 			uint32_t tmp = HX711Data;
 			data[2]=tmp>>16;
 			data[1]=tmp>>8;
