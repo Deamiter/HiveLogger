@@ -12,41 +12,44 @@
 #define AHX711_SCALE 745
 #define AHX711_SHIFT 5000
 
-// No, pins should NOT be defined in a driver!
-#define CLOCKPIN A0
-#define DOUTPIN A1
-
 class AHX711: public Sensor
 {
+	private:
+		uint8_t _clockpin;
+		uint8_t _doutpin;
 	public:
-		AHX711(uint8_t samplePeriod=1):Sensor(AHX711_UUID, AHX711_LENGTH_OF_DATA, AHX711_SCALE, AHX711_SHIFT){};
+		AHX711(uint8_t clockpin, uint8_t doutpin, uint8_t samplePeriod=1):Sensor(AHX711_UUID, AHX711_LENGTH_OF_DATA, AHX711_SCALE, AHX711_SHIFT){
+			_clockpin=clockpin;
+			_doutpin = doutpin;
+			
+		};
 		String getName() { return "Hive Weight";}
 		String getUnits(){ return "pounds";}
 		void init(){
 			
-			pinMode(CLOCKPIN, OUTPUT);
-			pinMode(DOUTPIN, INPUT);
+			pinMode(_clockpin, OUTPUT);
+			pinMode(_doutpin, INPUT);
 		}
 			
 		void getData() {
 			// Turn Scale On
-			digitalWrite(CLOCKPIN, LOW);
-			// digitalWrite(CLOCKPIN, HIGH);
+			digitalWrite(_clockpin, LOW);
+			// digitalWrite(_clockpin, HIGH);
 			
 				
 			uint32_t HX711Data;
 			unsigned char i;
 			
-			while (digitalRead(DOUTPIN));			
+			while (digitalRead(_doutpin));			
 
 
 	
 			// pulse the clock pin 24 times to read the data 
 			for (i=0; i<24; i++) {
-				digitalWrite(CLOCKPIN, HIGH);
+				digitalWrite(_clockpin, HIGH);
 				HX711Data = HX711Data<<1;
-				HX711Data = HX711Data + digitalRead(DOUTPIN);
-				digitalWrite(CLOCKPIN, LOW);
+				HX711Data = HX711Data + digitalRead(_doutpin);
+				digitalWrite(_clockpin, LOW);
 			}
 			
 			
